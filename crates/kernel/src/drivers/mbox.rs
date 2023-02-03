@@ -1,5 +1,5 @@
-use crate::mmio;
-use crate::periph_map;
+use crate::drivers::mmio;
+use crate::drivers::periph_map;
 
 #[repr(C, align(16))]
 pub struct MailboxMsg {

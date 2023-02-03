@@ -2,5 +2,5 @@
     -machine raspi3b \
     -m 1024M   \
     -cpu cortex-a53 \
-    -kernel target/aarch64-unknown-none/release/kfs_1_aarch64 \
+    -kernel target/aarch64-unknown-none/release/kernel \
     -serial stdio $1

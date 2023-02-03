@@ -8,32 +8,26 @@
 #![no_main]
 #![feature(format_args_nl)]
 
-extern crate drivers;
-
+mod drivers;
+pub mod log;
 mod panic;
 
 use core::arch::asm;
 use core::{arch::global_asm, ptr};
-use drivers::{ilog, println};
 
 global_asm!(include_str!("start.s"));
 
 // disable name mangling or `entry` symbol will not be found!
 #[no_mangle]
 pub extern "C" fn entry() {
-    let gpio = drivers::gpio::GPIO::new();
-    gpio.set_alt5_gpio14();
-    gpio.set_alt5_gpio15();
-    gpio.clear_pu_pd_clk0(14);
-    gpio.clear_pu_pd_clk0(15);
-
-    let mut uart = drivers::uart::UARTPL011::new();
-    uart.init();
-    ilog!(&mut uart, "uart init");
+    let drivers = drivers::Drivers::new();
+    drivers.init();
+    ilog!("{} - uart init", drivers.systimer.get());
     unsafe {
         loop {
-            let chr = uart.recv();
-            uart.send(chr);
+            let chr = drivers.uart.recv();
+            drivers.uart.send(chr);
+            ilog!("timer : {}", drivers.systimer.get());
             //uart.flush();
             //uart.send('\n');
         }

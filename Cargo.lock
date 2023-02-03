@@ -3,17 +3,10 @@
 version = 3
 
 [[package]]
-name = "drivers"
+name = "kernel"
 version = "0.1.0"
 dependencies = [
  "utils",
-]
-
-[[package]]
-name = "kfs_1_aarch64"
-version = "0.1.0"
-dependencies = [
- "drivers",
 ]
 
 [[package]]

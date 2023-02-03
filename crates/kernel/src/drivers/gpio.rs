@@ -24,10 +24,10 @@
 // 0x 7E20 0058 GPFEN0 GPIO Pin Falling Edge Detect Enable 0 32 R/W
 // 0x 7E20 005C GPFEN1 GPIO Pin Falling Edge Detect Enable 1 32 R/W
 //
-
-use crate::mmio;
-use crate::periph_map;
 extern crate utils;
+
+use crate::drivers::mmio;
+use crate::drivers::periph_map;
 
 pub const GPIO_PBASE: usize = periph_map::PBASE + 0x200000;
 

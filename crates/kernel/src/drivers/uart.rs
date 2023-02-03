@@ -1,6 +1,6 @@
-use crate::mbox;
-use crate::mmio;
-use crate::periph_map;
+use crate::drivers::mbox;
+use crate::drivers::mmio;
+use crate::drivers::periph_map;
 use core::arch::asm;
 use core::fmt;
 use core::fmt::Write;
@@ -221,7 +221,10 @@ impl UARTPL011 {
                 asm!("nop");
             }
         }
-        let chr = self.DR.read();
+        let mut chr = (self.DR.read() & 0xFF) as u8 as char;
+        if chr == '\r' {
+            chr = '\n';
+        }
         ((chr as u8) & 0xFF) as u8 as char
     }
 }
@@ -231,36 +234,4 @@ impl fmt::Write for UARTPL011 {
         self.send_str(s);
         Ok(())
     }
-}
-
-pub fn _print(serial: &mut UARTPL011, args: fmt::Arguments) {
-    serial.write_fmt(args).unwrap();
-}
-
-/// Prints without a newline.
-///
-/// Carbon copy from <https://doc.rust-lang.org/src/std/macros.rs.html>
-#[macro_export]
-macro_rules! print {
-    ($serial:expr, $($arg:tt)*) => ($crate::uart::_print($serial, format_args!($($arg)*)));
-}
-
-/// Prints with a newline.
-///
-/// Carbon copy from <https://doc.rust-lang.org/src/std/macros.rs.html>
-#[macro_export]
-macro_rules! println {
-    ($serial:expr) => ($crate::printt!($serial, "\n"));
-    ($serial:expr, $($arg:tt)*) => ({
-        $crate::uart::_print($serial, format_args_nl!($($arg)*));
-    })
-}
-
-#[macro_export]
-macro_rules! ilog {
-    ($serial:expr, $($arg:tt)*) => {{
-        $serial.send_str("[info] -> ");
-        $crate::uart::_print($serial, format_args_nl!($($arg)*));
-
-    }};
 }

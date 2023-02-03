@@ -13,9 +13,12 @@
 // 0x3F300000 - External Mass Media Controller (SD card reader)
 // 0x3F980000 - Universal Serial Bus controller
 
+use crate::ilog;
+
 pub mod gpio;
 pub mod mbox;
 pub mod mmio;
+pub mod systimer;
 pub mod uart;
 
 #[cfg(feature = "qemu")]
@@ -29,6 +32,34 @@ mod periph_map {
 mod periph_map {
     /// Peripheral base address for Raspberry 3.
     pub const PBASE: usize = 0x7E00_0000;
+}
+
+pub struct Drivers {
+    pub gpio: gpio::GPIO,
+    pub uart: uart::UARTPL011,
+    pub systimer: systimer::SysTimer,
+}
+
+impl Drivers {
+    pub fn new() -> Self {
+        Drivers {
+            gpio: gpio::GPIO::new(),
+            uart: uart::UARTPL011::new(),
+            systimer: systimer::SysTimer::new(),
+        }
+    }
+
+    pub fn init(&self) {
+        ilog!("init drivers");
+
+        self.gpio.set_alt5_gpio14();
+        self.gpio.set_alt5_gpio15();
+        self.gpio.clear_pu_pd_clk0(14);
+        self.gpio.clear_pu_pd_clk0(15);
+
+        self.uart.init();
+        ilog!("drivers [ok]");
+    }
 }
 
 #[cfg(test)]
