@@ -24,10 +24,12 @@
 // 0x 7E20 0058 GPFEN0 GPIO Pin Falling Edge Detect Enable 0 32 R/W
 // 0x 7E20 005C GPFEN1 GPIO Pin Falling Edge Detect Enable 1 32 R/W
 //
-extern crate utils;
 
 use crate::drivers::mmio;
 use crate::drivers::periph_map;
+use crate::utils;
+use crate::utils::delay;
+use crate::{check_bit, clear_bit, set_bit};
 
 pub const GPIO_PBASE: usize = periph_map::PBASE + 0x200000;
 
@@ -52,9 +54,9 @@ impl GPIO {
     pub fn set_alt5_gpio14(&self) {
         let mut val;
         val = self.GPFSEL1.read();
-        utils::clear_bit!(val, 12);
-        utils::clear_bit!(val, 13);
-        utils::set_bit!(val, 14);
+        clear_bit!(val, 12);
+        clear_bit!(val, 13);
+        set_bit!(val, 14);
         self.GPFSEL1.write(val);
     }
 
@@ -62,9 +64,9 @@ impl GPIO {
     pub fn set_alt5_gpio15(&self) {
         let mut val: u32;
         val = self.GPFSEL1.read();
-        utils::clear_bit!(val, 15);
-        utils::clear_bit!(val, 16);
-        utils::set_bit!(val, 17);
+        clear_bit!(val, 15);
+        clear_bit!(val, 16);
+        set_bit!(val, 17);
         self.GPFSEL1.write(val);
     }
 
@@ -72,11 +74,11 @@ impl GPIO {
     pub fn clear_pu_pd_clk0(&self, pin: u8) {
         self.GPPUD.write(0);
         unsafe {
-            utils::delay(150);
+            delay(150);
         }
         self.GPPUDCLK0.write(1 << pin);
         unsafe {
-            utils::delay(150);
+            delay(150);
         }
         self.GPPUD.write(0);
     }

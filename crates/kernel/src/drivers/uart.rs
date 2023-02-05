@@ -1,11 +1,11 @@
 use crate::drivers::mbox;
 use crate::drivers::mmio;
 use crate::drivers::periph_map;
+use crate::{check_bit, clear_bit, set_bit};
 use core::arch::asm;
 use core::fmt;
 use core::fmt::Write;
 use core::{arch::global_asm, ptr};
-extern crate utils;
 
 pub const PBASE_MU: usize = periph_map::PBASE + 0x215000;
 
@@ -63,7 +63,7 @@ impl MiniUART {
     pub fn send(&self, c: char) {
         loop {
             let val = self.AUX_MU_LSR_REG.read();
-            if utils::check_bit!(val, 0) {
+            if check_bit!(val, 0) {
                 // data is ready
                 break;
             }
@@ -80,7 +80,7 @@ impl MiniUART {
     pub fn recv(&self) -> char {
         loop {
             let val = self.AUX_MU_LSR_REG.read();
-            if utils::check_bit!(val, 1) {
+            if check_bit!(val, 1) {
                 // data is ready
                 break;
             }
@@ -154,11 +154,11 @@ impl UARTPL011 {
         let mut val = 0;
         self.set_lchr();
         // UARTEN enable
-        utils::set_bit!(val, 0);
+        set_bit!(val, 0);
         // RXE enable
-        utils::set_bit!(val, 9);
+        set_bit!(val, 9);
         // TXE enable
-        utils::set_bit!(val, 8);
+        set_bit!(val, 8);
         // disabled all interrupts atm.
         self.IMSC.write(0);
         self.CR.write(val);
@@ -172,28 +172,26 @@ impl UARTPL011 {
     /// transmitted or received in a frame.
     pub fn set_lchr(&self) {
         let mut val = self.LCRH.read();
-        utils::set_bit!(val, 4);
-        utils::set_bit!(val, 5);
-        utils::set_bit!(val, 6);
+        set_bit!(val, 4);
+        set_bit!(val, 5);
+        set_bit!(val, 6);
         self.LCRH.write(val);
     }
 
     /// TODO understand that !.
     pub fn set_baudrate(&self) {
-        // 3000000 clock rate == 250 Mhz
-        let bauddiv: u64 = 40000000 * 100 / 16 / 115200;
+        // On raspberry the clock is : 30000000
+        let bauddiv: u64 = 3000000 / 16 / 115200;
+        // 3000000 / (16 * 115200) = 1.627 = ~1
         let ibrd = 1;
-        let mut fbrd = bauddiv - (ibrd * 100);
-        if fbrd > 31 {
-            fbrd = 31;
-        }
-        fbrd = 40;
+        // Fractional part register = (.627 * 64) + 0.5 = 40.6 = ~40.
+        let mut fbrd = 40;
         self.IBRD.write(ibrd as u32);
         self.FBRD.write(fbrd as u32);
     }
 
     pub fn send(&self, c: char) {
-        while utils::check_bit!(self.FR.read(), 5) {
+        while check_bit!(self.FR.read(), 5) {
             unsafe {
                 asm!("nop");
             }
@@ -202,7 +200,7 @@ impl UARTPL011 {
     }
 
     pub fn flush(&self) {
-        while utils::check_bit!(self.FR.read(), 3) {
+        while check_bit!(self.FR.read(), 3) {
             unsafe {
                 asm!("nop");
             }
@@ -216,7 +214,7 @@ impl UARTPL011 {
     }
 
     pub fn recv(&self) -> char {
-        while utils::check_bit!(self.FR.read(), 4) {
+        while check_bit!(self.FR.read(), 4) {
             unsafe {
                 asm!("nop");
             }

@@ -5,12 +5,22 @@ edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
-
 [dependencies]
+test_types = { path = "../testlib/test_types" }
 
-[dependencies.utils]
-path = "../utils"
+[dev-dependencies]
+test_macro = {path = "../testlib/test_macro"}
 
 [features]
 qemu = []
 raspberry = []
+test_build = []
+
+[lib]
+name = "libkernel"
+test = true
+
+[[bin]]
+name = "kernel"
+test = false
+

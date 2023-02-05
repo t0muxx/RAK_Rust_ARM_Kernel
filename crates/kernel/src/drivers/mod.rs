@@ -1,7 +1,3 @@
-#![feature(format_args_nl)]
-#![no_std]
-#![no_main]
-
 // 0x3F003000 - System Timer
 // 0x3F00B000 - Interrupt controller
 // 0x3F00B880 - VideoCore mailbox
@@ -34,9 +30,13 @@ mod periph_map {
     pub const PBASE: usize = 0x7E00_0000;
 }
 
+/// Struct that contains drivers for peripherals.
 pub struct Drivers {
+    /// Gpio drivers
     pub gpio: gpio::GPIO,
+    /// Uart drivers
     pub uart: uart::UARTPL011,
+    /// Systimer drivers
     pub systimer: systimer::SysTimer,
 }
 
@@ -49,6 +49,9 @@ impl Drivers {
         }
     }
 
+    /// init drivers function.
+    /// Set gpio pin for UART.
+    /// Init uart.
     pub fn init(&self) {
         ilog!("init drivers");
 

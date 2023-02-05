@@ -1,7 +1,15 @@
+use crate::cpu::qemu;
+use crate::println;
 use core::panic::PanicInfo;
 
-#[panic_handler]
 // `!` -> indicate that the function never returns
-fn on_panic(_info: &PanicInfo) -> ! {
-    loop {}
+#[panic_handler]
+fn panic(info: &PanicInfo) -> ! {
+    #[cfg(feature = "test_build")]
+    {
+        qemu::exit_failure()
+    }
+    loop {
+        println!("panic");
+    }
 }

@@ -29,10 +29,3 @@ global_asm!(include_str!("utils.s"));
 extern "C" {
     pub fn delay(delay: u64);
 }
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    //    #[test]
-}
