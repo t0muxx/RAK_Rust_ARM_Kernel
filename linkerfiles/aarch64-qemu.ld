@@ -8,7 +8,7 @@ SECTIONS
     .rodata : { *(.rodata) }
     .bss : { *(.bss) }
 
-    . = ALIGN(8);
+    . = ALIGN(32);
     . = . + 0x4000;
     LD_STACK_PTR = .;
 }

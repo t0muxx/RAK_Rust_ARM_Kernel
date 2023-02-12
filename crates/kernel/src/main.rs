@@ -8,18 +8,30 @@
 // in linker script.
 #![no_main]
 
+use libkernel::ilog;
+use libkernel::utils::infloop;
+
 use core::arch::asm;
 use core::{arch::global_asm, ptr};
 
-use libkernel::{cpu, drivers, log, syncronization, utils};
+use libkernel::{cpu, cpu::el, drivers, log, syncronization, utils};
 
 global_asm!(include_str!("start.s"));
 
 // disable name mangling or `entry` symbol will not be found!
 #[no_mangle]
 pub extern "C" fn entry() {
+    let mut a = 0;
+    el1_run();
+}
+
+#[no_mangle]
+pub extern "C" fn el1_run() {
+    let ret = cpu::el::get_current_el();
     let drivers = drivers::Drivers::new();
+    infloop();
     drivers.init();
+    ilog!("el {ret}");
     unsafe {
         loop {
             let chr = drivers.uart.recv();

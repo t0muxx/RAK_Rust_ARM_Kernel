@@ -9,6 +9,8 @@ use core::result::Result;
 use core::result::Result::Err;
 use core::result::Result::Ok;
 
+use crate::ilog;
+
 pub struct AtomicUsize {
     inner: UnsafeCell<usize>,
 }
@@ -29,6 +31,9 @@ impl AtomicUsize {
     }
 
     pub fn store(&self, v: usize) {
+        unsafe {
+            asm!("1:", "mov x18, 0", "cmp x18, 1", "bne 1b",);
+        }
         unsafe {
             asm!(
                 "1:",

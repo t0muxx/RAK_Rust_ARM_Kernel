@@ -18,6 +18,14 @@ proc_hang:
 
 .extern LD_STACK_PTR
 master:
+    adr    x0, master_switch_el1
+    bl switch_el2
+
+master_switch_el1:
+    adr x0, master_cont
+    bl switch_el1
+
+master_cont:
     ldr    x30, =LD_STACK_PTR
     mov sp, x30
     bl    entry

@@ -1,4 +1,5 @@
 #![no_std]
+use core::arch::asm;
 #[feature(global_asm)]
 use core::arch::global_asm;
 
@@ -28,4 +29,8 @@ global_asm!(include_str!("utils.s"));
 
 extern "C" {
     pub fn delay(delay: u64);
+}
+
+pub fn infloop() {
+    unsafe { asm!("1:", "cmp x20, 123", "bne 1b",) }
 }

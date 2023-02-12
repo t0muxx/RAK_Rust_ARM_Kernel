@@ -6,4 +6,4 @@
     -cpu cortex-a53 \
     -semihosting \
     -kernel $1 \
-    -serial stdio
+    -serial stdio 
