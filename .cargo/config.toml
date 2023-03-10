@@ -1,0 +1,2 @@
+[target.'cfg(target_os = "none")']
+runner = "bash /home/t0mux/perso/aarch64_Cortex-A53_kfs/test_runner.sh"

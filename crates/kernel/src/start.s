@@ -16,8 +16,9 @@ _start:
 proc_hang: 
     b proc_hang
 
-.extern LD_STACK_PTR
 master:
+    adr x0, __exception_vector_start
+    msr vbar_el1, x0
     adr    x0, master_switch_el1
     bl switch_el2
 
@@ -26,7 +27,7 @@ master_switch_el1:
     bl switch_el1
 
 master_cont:
-    ldr    x30, =LD_STACK_PTR
+    ldr    x30, =__boot_core_stack_end_exclusive
     mov sp, x30
     bl    entry
 

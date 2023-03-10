@@ -29,15 +29,13 @@ pub extern "C" fn entry() {
 pub extern "C" fn el1_run() {
     let ret = cpu::el::get_current_el();
     let drivers = drivers::Drivers::new();
-    infloop();
     drivers.init();
-    ilog!("el {ret}");
+    //ilog!("el {ret}");
     unsafe {
         loop {
             let chr = drivers.uart.recv();
             drivers.uart.send(chr);
-            //uart.flush();
-            //uart.send('\n');
+            ilog!("end");
         }
     }
 }

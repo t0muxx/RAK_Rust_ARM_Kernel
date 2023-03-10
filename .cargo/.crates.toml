@@ -1,0 +1,21 @@
+[v1]
+"cargo-xbuild 0.6.6 (registry+https://github.com/rust-lang/crates.io-index)" = [
+    "cargo-xb",
+    "cargo-xbuild",
+    "cargo-xc",
+    "cargo-xcheck",
+    "cargo-xclippy",
+    "cargo-xdoc",
+    "cargo-xfix",
+    "cargo-xinstall",
+    "cargo-xpublish",
+    "cargo-xr",
+    "cargo-xrun",
+    "cargo-xrustc",
+    "cargo-xt",
+    "cargo-xtest",
+]
+"xargo 0.3.26 (registry+https://github.com/rust-lang/crates.io-index)" = [
+    "xargo",
+    "xargo-check",
+]

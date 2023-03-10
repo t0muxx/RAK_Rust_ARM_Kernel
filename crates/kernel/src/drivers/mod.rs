@@ -11,6 +11,7 @@
 
 use crate::ilog;
 
+pub mod gic;
 pub mod gpio;
 pub mod mbox;
 pub mod mmio;
@@ -38,6 +39,7 @@ pub struct Drivers {
     pub uart: uart::UARTPL011,
     /// Systimer drivers
     pub systimer: systimer::SysTimer,
+    pub gic: gic::Gic,
 }
 
 impl Drivers {
@@ -46,6 +48,7 @@ impl Drivers {
             gpio: gpio::GPIO::new(),
             uart: uart::UARTPL011::new(),
             systimer: systimer::SysTimer::new(),
+            gic: gic::Gic::new(),
         }
     }
 
@@ -61,6 +64,13 @@ impl Drivers {
         self.gpio.clear_pu_pd_clk0(15);
 
         self.uart.init();
+
+        //let mut big_addr: u64 = 8 * 1024 * 1024 * 1024;
+        //unsafe { core::ptr::read_volatile(big_addr as *mut u64) };
+        ilog!("##############################\n\n\n\n");
+        self.gic.enable_system_timer();
+        ilog!("#######################\n\n\n\n");
+        self.systimer.set_cmp1(5000000);
         ilog!("drivers [ok]");
     }
 }

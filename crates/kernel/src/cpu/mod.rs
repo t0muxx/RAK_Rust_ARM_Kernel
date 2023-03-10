@@ -4,6 +4,7 @@
 use core::arch::asm;
 
 pub mod el;
+pub mod exceptions;
 pub mod qemu;
 
 /// Make the host QEMU binary execute `exit(1)`.
