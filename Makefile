@@ -1,19 +1,14 @@
-TARGETDIR = target/aarch64-unknown-none/release
-TARGETFILESDIR = targetfiles
-LINKERFILESDIR = linkerfiles
-
+RSFLAGS = -C link-arg=--script=aarch64-rasp3b.ld
 
 qemu:
-	cargo xbuild --target=$(TARGETFILESDIR)/aarch64-unknown-none.json --release --features "qemu"
+	@RUSTFLAGS="$(RSFLAGS)" cargo rustc --features "qemu" --release --manifest-path crates/kernel/Cargo.toml
 
 run:
-	cargo xrun --target=$(TARGETFILESDIR)/aarch64-unknown-none.json --release --features "qemu"
-
-doc:
-	cargo xdoc --target=$(TARGETFILESDIR)/aarch64-unknown-none.json --release --features "qemu" --open
+	@RUSTFLAGS="$(RSFLAGS)" cargo run --release --features "qemu"
 
 test:
-	cargo xtest --target=$(TARGETFILESDIR)/aarch64-unknown-none.json -p kernel --lib --release --features qemu,test_build
+	@RUSTFLAGS="$(RSFLAGS)" cargo test -p kernel --lib --release --features qemu,test_build
 
 raspb:
-	cargo xbuild --target=$(TARGETFILESDIR)/aarch64-unknown-none-raspb.json --release --features "raspberry"
+	@RUSTFLAGS="$(RSFLAGS)" cargo rustc --features "raspberry" --release --manifest-path crates/kernel/Cargo.toml
+	/home/t0mux/tools/builroot/buildroot-2022.02.1/output/host/aarch64-buildroot-linux-uclibc/bin/objcopy -O binary target/aarch64-unknown-none/release/kernel kernel8.img

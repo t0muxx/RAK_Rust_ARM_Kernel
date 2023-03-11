@@ -32,6 +32,6 @@ mod tests {
     #[kernel_test]
     fn test_get_current_el() {
         let ret = el::get_current_el();
-        assert!(ret == 3);
+        assert!(ret == 1);
     }
 }

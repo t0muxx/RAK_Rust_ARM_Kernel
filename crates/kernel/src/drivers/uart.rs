@@ -183,9 +183,9 @@ impl UARTPL011 {
         // On raspberry the clock is : 30000000
         let bauddiv: u64 = 3000000 / 16 / 115200;
         // 3000000 / (16 * 115200) = 1.627 = ~1
-        let ibrd = 1;
+        let ibrd = 3;
         // Fractional part register = (.627 * 64) + 0.5 = 40.6 = ~40.
-        let mut fbrd = 40;
+        let mut fbrd = 16;
         self.IBRD.write(ibrd as u32);
         self.FBRD.write(fbrd as u32);
     }

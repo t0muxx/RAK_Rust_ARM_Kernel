@@ -3,3 +3,6 @@ members = [
 "crates/kernel/",
 "crates/testlib/*"
 ]
+
+[profile.release]
+lto = true
