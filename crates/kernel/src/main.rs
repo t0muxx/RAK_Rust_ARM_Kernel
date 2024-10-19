@@ -28,13 +28,14 @@ pub extern "C" fn entry() {
 #[no_mangle]
 pub extern "C" fn el1_run() {
     let ret = cpu::el::get_current_el();
-    let drivers = drivers::Drivers::new();
+    let mut drivers = drivers::Drivers::new();
     drivers.init();
     //ilog!("el {ret}");
     unsafe {
         loop {
             let chr = drivers.uart.recv();
             drivers.uart.send(chr);
+            drivers.uart.send('\n');
             ilog!("end");
         }
     }

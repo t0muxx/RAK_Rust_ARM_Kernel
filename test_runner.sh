@@ -6,5 +6,5 @@ qemu-system-aarch64 \
     -cpu cortex-a53 \
     -semihosting \
     -kernel $1 \
+    -serial stdio \
 	-d int,unimp,guest_errors 
-    # -serial stdio \

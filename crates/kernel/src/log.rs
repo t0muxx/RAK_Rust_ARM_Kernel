@@ -15,7 +15,7 @@ impl Log {
 
 /// Can be enhanced by using global to access drivers.
 pub fn _print(args: fmt::Arguments) {
-    //UARTPL011::new().write_fmt(args).unwrap();
+    UARTPL011::new().write_fmt(args).unwrap();
     // TODO : Enable when woring uart
 }
 
@@ -41,7 +41,7 @@ macro_rules! println {
 #[macro_export]
 macro_rules! ilog {
     ($($arg:tt)*) => {{
-        $crate::log::_print(format_args!("[i] [{:.10}] - ", $crate::drivers::systimer::SysTimer::new().get_second()));
+        //$crate::log::_print(format_args!("[i] [{:.10}] - ", $crate::drivers::systimer::SysTimer::new().get_second()));
         $crate::log::_print(format_args_nl!($($arg)*));
 
     }};

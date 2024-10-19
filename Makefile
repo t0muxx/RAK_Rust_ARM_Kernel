@@ -1,4 +1,4 @@
-RSFLAGS = -C link-arg=--script=aarch64-rasp3b.ld
+RSFLAGS = -C link-arg=--script=aarch64-qemu-virt.ld
 
 build:
 	@RUSTFLAGS="$(RSFLAGS)" cargo rustc --features "qemu" --manifest-path crates/kernel/Cargo.toml
