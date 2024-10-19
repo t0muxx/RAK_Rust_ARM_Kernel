@@ -7,7 +7,7 @@ use core::fmt;
 use core::fmt::Write;
 use core::{arch::global_asm, ptr};
 
-pub const PBASE_MU: usize = periph_map::PBASE + 0x215000;
+pub const PBASE_MU: usize = periph_map::UART0;
 
 #[allow(non_snake_case)]
 pub struct MiniUART {

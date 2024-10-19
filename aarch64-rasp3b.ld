@@ -3,8 +3,7 @@ ENTRY(_start)
 
 SECTIONS
 {
-    . = 0x80000;
-    /* Set _start to 0x80000 */
+    . = 0x40000000;
     __start = .; 
     .text :
     {
@@ -24,8 +23,11 @@ SECTIONS
     } 
  
     _bss_start = .;
-    .bss (NOLOAD) : { 
+    .bss ALIGN(16) (NOLOAD) : { 
         *(.bss*) 
     } 
     _bss_end = .;
+	. = ALIGN(16);
+    . = . + 0x8000;
+	_stack_top = .;
 }

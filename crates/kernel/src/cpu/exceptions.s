@@ -3,6 +3,7 @@
 .macro CALL_EXCEPTION_HANDLER handler
 __vector_\handler:
     bl disable_irq
+	// wfi // wait when having an interrruping
     // using `16` causes sotring pairs of registers.
 	sub	sp,  sp,  #16 * 18
 

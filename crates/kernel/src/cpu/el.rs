@@ -41,6 +41,9 @@ type Eretfn = extern "C" fn();
 
 /// switch from el3 to el2
 /// retf is a function address passed to elr_el3.
+/// in Qemu with `-kernel` option, the code starts in EL2 directly. It
+/// is not need to switch from el3 to  el2 (and special register are undefined)
+/// https://stackoverflow.com/questions/71006360/qemu-system-aarch64-always-entering-exception-level-2-and-hangs-when-switching-t
 #[no_mangle]
 pub extern "C" fn switch_el2(retf: Eretfn) {
     let hcr_val: usize = HCR_EL2_RW_AARCH64;

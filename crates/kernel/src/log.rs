@@ -15,7 +15,8 @@ impl Log {
 
 /// Can be enhanced by using global to access drivers.
 pub fn _print(args: fmt::Arguments) {
-    UARTPL011::new().write_fmt(args).unwrap();
+    //UARTPL011::new().write_fmt(args).unwrap();
+    // TODO : Enable when woring uart
 }
 
 /// Prints without a newline.

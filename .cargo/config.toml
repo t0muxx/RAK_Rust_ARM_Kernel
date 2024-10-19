@@ -1,5 +1,5 @@
 [build]
-target = "aarch64-unknown-none"
+target = "aarch64-unknown-none-softfloat"
 
 [target.'cfg(target_os = "none")']
-runner = "bash /home/t0mux/perso/aarch64_Cortex-A53_kfs/test_runner.sh"
+runner = "/Users/t0mux/perso/RRK_raspberry_rust_kernel/test_runner.sh"

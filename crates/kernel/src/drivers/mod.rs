@@ -18,17 +18,11 @@ pub mod mmio;
 pub mod systimer;
 pub mod uart;
 
-#[cfg(feature = "qemu")]
 mod periph_map {
     /// Peripheral base address.
-    /// Differs from qemu and Raspberry 3.
-    pub const PBASE: usize = 0x3F00_0000;
-}
-
-#[cfg(feature = "raspberry")]
-mod periph_map {
-    /// Peripheral base address for Raspberry 3.
-    pub const PBASE: usize = 0x7E00_0000;
+    pub const PBASE: usize = 0x08000000;
+    /// UART0 base address
+    pub const UART0: usize = 0x09000000;
 }
 
 /// Struct that contains drivers for peripherals.

@@ -38,13 +38,16 @@ master:
     /* set exception vector and switch exception level */
     adr x0, __exception_vector_start
     msr vbar_el1, x0
-    adr    x0, master_switch_el1
-    bl switch_el2
+    // adr    x0, master_switch_el1 -> return address when switching to el2
+	// bl switch_el2 -> not needed as qemu virt start in el1
 
-master_switch_el1:
-    adr x0, master_cont
-    bl switch_el1
+//master_switch_el1:
+    // adr x0, master_cont
+    // bl switch_el1 -> not need as qemu virt starts in el1
 
 master_cont:
-    mov sp, 0x8000
+	mov x0, #0x00300000 // No trap to all NEON & FP instructions
+	msr cpacr_el1, x0
+    ldr x30, =_stack_top
+	mov sp, x30
     bl    entry
