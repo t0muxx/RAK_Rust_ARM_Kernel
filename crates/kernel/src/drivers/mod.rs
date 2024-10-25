@@ -1,14 +1,3 @@
-// 0x3F003000 - System Timer
-// 0x3F00B000 - Interrupt controller
-// 0x3F00B880 - VideoCore mailbox
-// 0x3F100000 - Power management
-// 0x3F104000 - Random Number Generator
-// 0x3F200000 - General Purpose IO controller
-// 0x3F201000 - UART0 (serial port, PL011)
-// 0x3F215000 - UART1 (serial port, AUX mini UART)
-// 0x3F300000 - External Mass Media Controller (SD card reader)
-// 0x3F980000 - Universal Serial Bus controller
-
 use crate::ilog;
 
 pub mod gic;
@@ -17,6 +6,37 @@ pub mod mbox;
 pub mod mmio;
 pub mod systimer;
 pub mod uart;
+
+const BASE_ADDR_DEVICETREE: usize = 0x40000000;
+
+pub struct DeviceTree<'a> {
+    pub base_address: usize,
+    pub fdt: fdt::Fdt<'a>,
+}
+
+impl DeviceTree<'_> {
+    pub fn new(base_addrese: usize) -> Result<Self, fdt::FdtError> {
+        unsafe {
+            let fdt = fdt::Fdt::from_ptr(base_addrese as *const u8)?;
+            Ok(Self {
+                base_address: base_addrese,
+                fdt,
+            })
+        }
+    }
+
+    pub fn get_node_address(self, node_name: &str) -> Option<usize> {
+        let node = self.fdt.find_node(node_name);
+        if let Some(node) = node {
+            if let Some(mut regs) = node.reg() {
+                if let Some(reg) = regs.next() {
+                    return Some(reg.starting_address as usize);
+                }
+            }
+        }
+        None
+    }
+}
 
 mod periph_map {
     /// Peripheral base address.
@@ -71,5 +91,12 @@ impl Drivers {
 
 #[cfg(test)]
 mod tests {
-    //    use super::*;
+    use super::*;
+    use test_macro::kernel_test;
+
+    #[kernel_test]
+    fn test_device_tree_parsing() {
+        let dt = DeviceTree::new(BASE_ADDR_DEVICETREE).unwrap();
+        let _n = dt.get_node_address("/pl011").unwrap();
+    }
 }

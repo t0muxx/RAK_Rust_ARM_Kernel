@@ -3,7 +3,7 @@ ENTRY(_start)
 
 SECTIONS
 {
-    . = 0x40000000;
+    . = 0x40100000;
     __start = .; 
     .text :
     {
@@ -17,11 +17,9 @@ SECTIONS
     .rodata ALIGN(16) : { 
         *(.rodata*) 
     } 
- 
     .data ALIGN(16) : { 
         *(.data*) 
     } 
- 
     _bss_start = .;
     .bss ALIGN(16) (NOLOAD) : { 
         *(.bss*) 
