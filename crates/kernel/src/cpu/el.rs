@@ -1,12 +1,14 @@
 //! exception level Helper.
 use core::arch::asm;
 
-use crate::utils::infloop;
 const SCR_EL1_MMU_DISABLED: usize = 0 << 0;
+#[allow(dead_code)]
 const SCR_EL1_MMU_ENABLED: usize = 1 << 0;
 const SCR_EL1_CACHE_DISABLED: usize = 0 << 2;
+#[allow(dead_code)]
 const SCR_EL1_CACHE_ENABLED: usize = 1 << 2;
 const SCR_EL1_ICACHE_DISABLED: usize = 0 << 12;
+#[allow(dead_code)]
 const SCR_EL1_ICACHE_ENABLED: usize = 1 << 12;
 const SCR_EL1_RESERVED1: usize = (3 << 28) | (3 << 22) | (1 << 20) | (1 << 11);
 const SCR_EL1_EOE_LITTLEE: usize = 0 << 24;
@@ -48,7 +50,7 @@ type Eretfn = extern "C" fn();
 pub extern "C" fn switch_el2(retf: Eretfn) {
     let hcr_val: usize = HCR_EL2_RW_AARCH64;
     let spsr_val: usize = SPSR_MASK_ALL | (9 << 0);
-    let sctlr_el1: usize = SCR_EL1_MMU_DISABLED
+    let _sctlr_el1: usize = SCR_EL1_MMU_DISABLED
         | SCR_EL1_CACHE_DISABLED
         | SCR_EL1_ICACHE_DISABLED
         | SCR_EL1_RESERVED1
@@ -78,7 +80,7 @@ pub extern "C" fn switch_el2(retf: Eretfn) {
 #[no_mangle]
 pub extern "C" fn switch_el1(retf: Eretfn) {
     let hcr_val: usize = HCR_EL2_RW_AARCH64;
-    let spsr_val: usize = SPSR_MASK_ALL | (5 << 0);
+    let spsr_val: usize = SPSR_MASK_ALL | (5);
     let sctlr_el1: usize = SCR_EL1_MMU_DISABLED
         | SCR_EL1_CACHE_DISABLED
         | SCR_EL1_ICACHE_DISABLED

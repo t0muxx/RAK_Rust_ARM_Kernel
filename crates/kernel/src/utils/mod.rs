@@ -1,6 +1,4 @@
-#![no_std]
 use core::arch::asm;
-#[feature(global_asm)]
 use core::arch::global_asm;
 
 #[macro_export]

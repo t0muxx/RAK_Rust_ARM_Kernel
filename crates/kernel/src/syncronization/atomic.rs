@@ -9,8 +9,6 @@ use core::result::Result;
 use core::result::Result::Err;
 use core::result::Result::Ok;
 
-use crate::ilog;
-
 pub struct AtomicUsize {
     inner: UnsafeCell<usize>,
 }

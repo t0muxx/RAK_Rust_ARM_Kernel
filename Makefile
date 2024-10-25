@@ -8,5 +8,5 @@ run: build
 	@RUSTFLAGS="$(RSFLAGS)" cargo run --features "qemu"
 
 test:
-	@RUSTFLAGS="$(RSFLAGS)" cargo test -p kernel --lib --release --features qemu,test_build
+	@RUSTFLAGS="$(RSFLAGS)" cargo test -p kernel --lib --release --features qemu,test_build -- --nocapture
 

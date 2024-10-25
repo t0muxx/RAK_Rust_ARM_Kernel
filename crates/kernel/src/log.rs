@@ -1,12 +1,12 @@
-#[macro_use]
 use core::fmt;
 use core::fmt::Write;
 
-use crate::drivers::systimer;
 use crate::drivers::uart::UARTPL011;
 
+#[allow(dead_code)]
 struct Log {}
 
+#[allow(dead_code)]
 impl Log {
     pub fn new() -> Self {
         Log {}

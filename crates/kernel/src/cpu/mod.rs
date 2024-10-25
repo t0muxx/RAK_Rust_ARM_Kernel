@@ -1,8 +1,6 @@
 //! Helper around cpu operations
 //!
 
-use core::arch::asm;
-
 pub mod el;
 pub mod exceptions;
 pub mod qemu;

@@ -1,3 +1,4 @@
+#[cfg(feature = "test_build")]
 use crate::cpu::qemu;
 use crate::println;
 use core::panic::PanicInfo;
@@ -7,9 +8,10 @@ use core::panic::PanicInfo;
 fn panic(info: &PanicInfo) -> ! {
     #[cfg(feature = "test_build")]
     {
+        println!("\n\n\t{:?}", info);
         qemu::exit_failure()
     }
     loop {
-        println!("panic");
+        println!("\n\n\t{:?}", info);
     }
 }

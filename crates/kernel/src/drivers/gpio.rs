@@ -27,9 +27,8 @@
 
 use crate::drivers::mmio;
 use crate::drivers::periph_map;
-use crate::utils;
 use crate::utils::delay;
-use crate::{check_bit, clear_bit, set_bit};
+use crate::{clear_bit, set_bit};
 
 pub const GPIO_PBASE: usize = periph_map::PBASE + 0x200000;
 

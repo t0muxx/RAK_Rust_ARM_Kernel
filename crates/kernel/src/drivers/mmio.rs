@@ -1,6 +1,3 @@
-use crate::drivers::mmio;
-use crate::drivers::periph_map;
-
 use core::ptr;
 
 /// Helper around memory mapped register.

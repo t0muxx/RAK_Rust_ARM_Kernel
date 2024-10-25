@@ -31,6 +31,7 @@ impl MailboxMsg {
 }
 pub const PBASE_MAILBOX: usize = periph_map::PBASE + 0xB880;
 
+#[allow(non_snake_case)]
 pub struct Mailbox {
     MBOX_READ: mmio::Register<u32>,
     MBOX_STATUS: mmio::Register<u32>,
@@ -40,7 +41,7 @@ pub struct Mailbox {
 impl Mailbox {
     pub fn new() -> Self {
         Mailbox {
-            MBOX_READ: mmio::Register::new(PBASE_MAILBOX + 0x0),
+            MBOX_READ: mmio::Register::new(PBASE_MAILBOX),
             MBOX_STATUS: mmio::Register::new(PBASE_MAILBOX + 0x18),
             MBOX_WRITE: mmio::Register::new(PBASE_MAILBOX + 0x20),
         }
@@ -49,10 +50,10 @@ impl Mailbox {
     pub fn send_msg(&self) {
         let msg = MailboxMsg::new();
         let pmsg = &msg as *const _ as usize;
-        let r = (pmsg & !0xF | 8);
+        let r = pmsg & !0xF | 8;
         loop {
             let val = self.MBOX_STATUS.read();
-            if !(val & 0x80000000 != 0) {
+            if val & 0x80000000 == 0 {
                 break;
             }
         }
@@ -60,7 +61,7 @@ impl Mailbox {
         loop {
             let val = self.MBOX_STATUS.read();
             let val2 = self.MBOX_READ.read();
-            if !(val & 0x40000000 != 0) || val2 as usize != r {
+            if val & 0x40000000 == 0 || val2 as usize != r {
                 break;
             }
         }

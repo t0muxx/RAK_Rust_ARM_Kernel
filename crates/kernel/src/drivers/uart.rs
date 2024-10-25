@@ -1,11 +1,8 @@
-use crate::drivers::mbox;
+use crate::check_bit;
 use crate::drivers::mmio;
 use crate::drivers::periph_map;
-use crate::{check_bit, clear_bit, set_bit};
 use core::arch::asm;
 use core::fmt;
-use core::fmt::Write;
-use core::{arch::global_asm, ptr};
 
 //pub const PBASE_MU: usize = periph_map::UART0;
 //
@@ -92,7 +89,7 @@ use core::{arch::global_asm, ptr};
 
 pub const PBASE_UPL011: usize = periph_map::UART0;
 
-#[allow(non_snake_case)]
+#[allow(non_snake_case, dead_code)]
 pub struct UARTPL011 {
     pub is_init: bool,
     /// Data register

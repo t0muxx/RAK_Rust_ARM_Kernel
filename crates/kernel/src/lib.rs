@@ -11,9 +11,8 @@
 #![reexport_test_harness_main = "test_main"]
 // we set this runner
 #![test_runner(crate::test_runner)]
-
-use core::arch::asm;
-use core::{arch::global_asm, ptr};
+#[cfg(test)]
+use core::arch::global_asm;
 pub mod cpu;
 pub mod drivers;
 pub mod log;
@@ -60,7 +59,7 @@ global_asm!(include_str!("start.s"));
 #[cfg(feature = "test_build")]
 #[no_mangle]
 pub extern "C" fn entry() {
-    let drivers = drivers::Drivers::new();
+    let mut drivers = drivers::Drivers::new();
     drivers.init();
     test_main();
     cpu::qemu::exit_success();
@@ -73,6 +72,6 @@ mod tests {
 
     #[kernel_test]
     fn test_kernel_1() {
-        assert!(1 == 1);
+        //assert!(1 == 1);
     }
 }

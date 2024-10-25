@@ -3,7 +3,7 @@ use crate::drivers::periph_map;
 use crate::set_bit;
 pub const GIC_PBASE: usize = periph_map::PBASE + 0xB000;
 
-#[allow(non_snake_case)]
+#[allow(non_snake_case, dead_code)]
 pub struct Gic {
     IRQBasicPending: mmio::Register<u32>,
     IRQPending1: mmio::Register<u32>,

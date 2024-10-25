@@ -1,10 +1,9 @@
 //! exceptions management module.
 
-use core::arch::asm;
 use core::arch::global_asm;
 use core::fmt;
 
-use crate::{ilog, println};
+use crate::println;
 
 global_asm!(include_str!("exceptions.s"));
 
@@ -30,24 +29,23 @@ struct ExceptionContext {
 
 impl fmt::Display for ExceptionContext {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "#######################################\n")?;
-        write!(f, "Context : \n");
-        for mut i in 0..15 {
-            write!(
+        writeln!(f, "#######################################")?;
+        writeln!(f, "Context : ")?;
+        for i in 0..15 {
+            writeln!(
                 f,
-                "x{i:<2} : 0x{: <24x} x{} : 0x{:x}\n",
+                "x{i:<2} : 0x{: <24x} x{} : 0x{:x}",
                 self.gpr[i],
                 i + 1,
                 self.gpr[i + 1]
-            );
-            i += 1;
+            )?;
         }
-        write!(f, "lr  : 0x{: <24x}\n", self.lr);
-        write!(f, "esr : 0x{: <25x}", self.esr);
-        write!(f, "spsr : 0x{:x}\n", self.spsr);
-        write!(f, "far : 0x{: <25x}", self.far);
-        write!(f, "elr : 0x{:x}\n", self.elr);
-        write!(f, "#######################################\n")?;
+        writeln!(f, "lr  : 0x{: <24x}", self.lr)?;
+        writeln!(f, "esr : 0x{: <25x}", self.esr)?;
+        writeln!(f, "spsr : 0x{:x}", self.spsr)?;
+        write!(f, "far : 0x{: <25x}", self.far)?;
+        writeln!(f, "elr : 0x{:x}", self.elr)?;
+        writeln!(f, "#######################################")?;
 
         Ok(())
     }
