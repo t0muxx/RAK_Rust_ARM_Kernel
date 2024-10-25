@@ -1,13 +1,9 @@
-# Cortex-a53 RRK - Raspberry Rust Kernel.
+# RAK - Rust ARM Kernel
 
 ## Why
 
 Wanted to learn bare metal developement in Rust.
-Raspberry was a cheap option, it had a lot of documentations.
-
-## Emulator
-
-It mainly runs on qemu at the moment.
+Originally started for raspberry, but only runs on qemu virt.
 
 ## Inspired from
 
