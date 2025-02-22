@@ -1,5 +1,8 @@
+use device_tree::DeviceTree;
+
 use crate::ilog;
 
+pub mod device_tree;
 pub mod gic;
 pub mod gpio;
 pub mod mbox;
@@ -7,45 +10,17 @@ pub mod mmio;
 pub mod systimer;
 pub mod uart;
 
-const BASE_ADDR_DEVICETREE: usize = 0x40000000;
-
-pub struct DeviceTree<'a> {
-    pub base_address: usize,
-    pub fdt: fdt::Fdt<'a>,
-}
-
-impl DeviceTree<'_> {
-    pub fn new(base_addrese: usize) -> Result<Self, fdt::FdtError> {
-        unsafe {
-            let fdt = fdt::Fdt::from_ptr(base_addrese as *const u8)?;
-            Ok(Self {
-                base_address: base_addrese,
-                fdt,
-            })
-        }
-    }
-
-    pub fn get_node_address(self, node_name: &str) -> Option<usize> {
-        let node = self.fdt.find_node(node_name);
-        if let Some(node) = node {
-            if let Some(mut regs) = node.reg() {
-                if let Some(reg) = regs.next() {
-                    return Some(reg.starting_address as usize);
-                }
-            }
-        }
-        None
-    }
-}
-
-mod periph_map {
-    /// Peripheral base address.
-    pub const PBASE: usize = 0x08000000;
-    /// UART0 base address
-    pub const UART0: usize = 0x09000000;
+pub trait Driver {
+    /// Usually set MMIO registers from base address of the device
+    fn new(dt: &DeviceTree) -> Self;
+    /// Init the device (set bit in registers etc.)
+    fn init(&mut self);
+    /// de-init the device.
+    fn deinit(&mut self);
 }
 
 /// Struct that contains drivers for peripherals.
+#[derive(Default)]
 pub struct Drivers {
     // Gpio drivers
     //pub gpio: gpio::GPIO,
@@ -57,11 +32,11 @@ pub struct Drivers {
 }
 
 impl Drivers {
-    pub fn new() -> Self {
+    pub fn new(dt: &DeviceTree) -> Self {
         Drivers {
             //gpio: gpio::GPIO::new(),
-            uart: uart::UARTPL011::new(),
-            // systimer: systimer::SysTimer::new(),
+            uart: uart::UARTPL011::new(&dt),
+            //systimer: systimer::SysTimer::new(),
             // gic: gic::Gic::new(),
         }
     }
@@ -70,8 +45,6 @@ impl Drivers {
     /// Set gpio pin for UART.
     /// Init uart.
     pub fn init(&mut self) {
-        ilog!("init drivers");
-
         //self.gpio.set_alt5_gpio14();
         //self.gpio.set_alt5_gpio15();
         //self.gpio.clear_pu_pd_clk0(14);
@@ -85,7 +58,7 @@ impl Drivers {
         //self.gic.enable_system_timer();
         //ilog!("#######################\n\n\n\n");
         //self.systimer.set_cmp1(5000000);
-        //ilog!("drivers [ok]");
+        ilog!("drivers [ok]");
     }
 }
 

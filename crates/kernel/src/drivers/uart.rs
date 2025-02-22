@@ -1,8 +1,12 @@
-use crate::check_bit;
+use fdt::FdtError;
+
 use crate::drivers::mmio;
-use crate::drivers::periph_map;
+use crate::{check_bit, clear_bit, ilog, set_bit};
 use core::arch::asm;
 use core::fmt;
+
+use super::device_tree::DeviceTree;
+use super::Driver;
 
 //pub const PBASE_MU: usize = periph_map::UART0;
 //
@@ -87,9 +91,8 @@ use core::fmt;
 //    }
 //}
 
-pub const PBASE_UPL011: usize = periph_map::UART0;
-
 #[allow(non_snake_case, dead_code)]
+#[derive(Default)]
 pub struct UARTPL011 {
     pub is_init: bool,
     /// Data register
@@ -119,34 +122,44 @@ pub struct UARTPL011 {
     //TDR: mmio::Register<u32>,
 }
 
-impl UARTPL011 {
-    pub fn new() -> Self {
-        UARTPL011 {
-            DR: mmio::Register::new(PBASE_UPL011 + 0x0),
-            RSRECR: mmio::Register::new(PBASE_UPL011 + 0x4),
-            FR: mmio::Register::new(PBASE_UPL011 + 0x18),
-            IBRD: mmio::Register::new(PBASE_UPL011 + 0x24),
-            FBRD: mmio::Register::new(PBASE_UPL011 + 0x28),
-            LCR_H: mmio::Register::new(PBASE_UPL011 + 0x2c),
-            CR: mmio::Register::new(PBASE_UPL011 + 0x30),
-            IFLS: mmio::Register::new(PBASE_UPL011 + 0x34),
-            IMSC: mmio::Register::new(PBASE_UPL011 + 0x38),
-            RIS: mmio::Register::new(PBASE_UPL011 + 0x3c),
-            MIS: mmio::Register::new(PBASE_UPL011 + 0x40),
-            ICR: mmio::Register::new(PBASE_UPL011 + 0x44),
-            DMACR: mmio::Register::new(PBASE_UPL011 + 0x48),
-            //ITCR: mmio::Register::new(PBASE_UPL011 + 0x80),
-            //ITIP: mmio::Register::new(PBASE_UPL011 + 0x84),
-            //ITOP: mmio::Register::new(PBASE_UPL011 + 0x88),
-            //TDR: mmio::Register::new(PBASE_UPL011 + 0x8c),
-            is_init: false,
+impl Driver for UARTPL011 {
+    fn new(dt: &DeviceTree) -> Self {
+        if let Some(base_address) = dt.get_node_address("/pl011") {
+            UARTPL011 {
+                DR: mmio::Register::new(base_address + 0x0),
+                RSRECR: mmio::Register::new(base_address + 0x4),
+                FR: mmio::Register::new(base_address + 0x18),
+                IBRD: mmio::Register::new(base_address + 0x24),
+                FBRD: mmio::Register::new(base_address + 0x28),
+                LCR_H: mmio::Register::new(base_address + 0x2c),
+                CR: mmio::Register::new(base_address + 0x30),
+                IFLS: mmio::Register::new(base_address + 0x34),
+                IMSC: mmio::Register::new(base_address + 0x38),
+                RIS: mmio::Register::new(base_address + 0x3c),
+                MIS: mmio::Register::new(base_address + 0x40),
+                ICR: mmio::Register::new(base_address + 0x44),
+                DMACR: mmio::Register::new(base_address + 0x48),
+                is_init: false,
+            }
+        } else {
+            panic!("Error parsing device tree");
         }
     }
 
-    pub fn init(&mut self) {
+    fn init(&mut self) {
         self.is_init = true;
+        let mut val = self.CR.read();
+        clear_bit!(val, 0);
+        self.CR.write(val);
+        set_bit!(val, 0);
+        self.CR.write(val);
     }
+    fn deinit(&mut self) {
+        self.is_init = false;
+    }
+}
 
+impl UARTPL011 {
     pub fn send(&self, c: char) {
         while check_bit!(self.FR.read(), 5) {
             unsafe {

@@ -9,3 +9,7 @@ Originally started for raspberry, but only runs on qemu virt.
 
 - https://github.com/s-matyukevich/raspberry-pi-os
 - https://github.com/rust-embedded/rust-raspberrypi-OS-tutorials
+
+# Next todo
+
+- Needs global mutable variables for drivers. Need to implement some kind of mutex

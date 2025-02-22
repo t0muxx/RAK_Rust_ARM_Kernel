@@ -1,6 +1,5 @@
 qemu-system-aarch64 \
     -machine virt \
-    -d int \
     -m 1024M \
     -cpu cortex-a53 \
 	-semihosting \

@@ -25,60 +25,60 @@
 // 0x 7E20 005C GPFEN1 GPIO Pin Falling Edge Detect Enable 1 32 R/W
 //
 
-use crate::drivers::mmio;
-use crate::drivers::periph_map;
-use crate::utils::delay;
-use crate::{clear_bit, set_bit};
+// use crate::drivers::mmio;
+// use crate::drivers::periph_map;
+// use crate::utils::delay;
+// use crate::{clear_bit, set_bit};
 
-pub const GPIO_PBASE: usize = periph_map::PBASE + 0x200000;
+// pub const GPIO_PBASE: usize = periph_map::PBASE + 0x200000;
 
-#[allow(non_snake_case)]
-pub struct GPIO {
-    /// GPIO Function Select 1
-    GPFSEL1: mmio::Register<u32>,
-    GPPUD: mmio::Register<u32>,
-    GPPUDCLK0: mmio::Register<u32>,
-}
+// #[allow(non_snake_case)]
+// pub struct GPIO {
+//     /// GPIO Function Select 1
+//     GPFSEL1: mmio::Register<u32>,
+//     GPPUD: mmio::Register<u32>,
+//     GPPUDCLK0: mmio::Register<u32>,
+// }
 
-impl GPIO {
-    pub fn new() -> Self {
-        GPIO {
-            GPFSEL1: mmio::Register::new((GPIO_PBASE + 0x4) as usize),
-            GPPUD: mmio::Register::new((GPIO_PBASE + 0x94) as usize),
-            GPPUDCLK0: mmio::Register::new((GPIO_PBASE + 0x98) as usize),
-        }
-    }
+// impl GPIO {
+//     pub fn new() -> Self {
+//         GPIO {
+//             GPFSEL1: mmio::Register::new((GPIO_PBASE + 0x4) as usize),
+//             GPPUD: mmio::Register::new((GPIO_PBASE + 0x94) as usize),
+//             GPPUDCLK0: mmio::Register::new((GPIO_PBASE + 0x98) as usize),
+//         }
+//     }
 
-    /// Set GPIO pin 14 to use alternate function 5 : `TXD1` (UART 1 Transmit Data)
-    pub fn set_alt5_gpio14(&self) {
-        let mut val;
-        val = self.GPFSEL1.read();
-        clear_bit!(val, 12);
-        clear_bit!(val, 13);
-        set_bit!(val, 14);
-        self.GPFSEL1.write(val);
-    }
+//     /// Set GPIO pin 14 to use alternate function 5 : `TXD1` (UART 1 Transmit Data)
+//     pub fn set_alt5_gpio14(&self) {
+//         let mut val;
+//         val = self.GPFSEL1.read();
+//         clear_bit!(val, 12);
+//         clear_bit!(val, 13);
+//         set_bit!(val, 14);
+//         self.GPFSEL1.write(val);
+//     }
 
-    /// Set GPIO pin 14 to use alternate function 5 : `RXD1` (UART 1 Receive Data)
-    pub fn set_alt5_gpio15(&self) {
-        let mut val: u32;
-        val = self.GPFSEL1.read();
-        clear_bit!(val, 15);
-        clear_bit!(val, 16);
-        set_bit!(val, 17);
-        self.GPFSEL1.write(val);
-    }
+//     /// Set GPIO pin 14 to use alternate function 5 : `RXD1` (UART 1 Receive Data)
+//     pub fn set_alt5_gpio15(&self) {
+//         let mut val: u32;
+//         val = self.GPFSEL1.read();
+//         clear_bit!(val, 15);
+//         clear_bit!(val, 16);
+//         set_bit!(val, 17);
+//         self.GPFSEL1.write(val);
+//     }
 
-    /// Clear pull-up and pull-down for GPIO 0 and 31.
-    pub fn clear_pu_pd_clk0(&self, pin: u8) {
-        self.GPPUD.write(0);
-        unsafe {
-            delay(150);
-        }
-        self.GPPUDCLK0.write(1 << pin);
-        unsafe {
-            delay(150);
-        }
-        self.GPPUD.write(0);
-    }
-}
+//     /// Clear pull-up and pull-down for GPIO 0 and 31.
+//     pub fn clear_pu_pd_clk0(&self, pin: u8) {
+//         self.GPPUD.write(0);
+//         unsafe {
+//             delay(150);
+//         }
+//         self.GPPUDCLK0.write(1 << pin);
+//         unsafe {
+//             delay(150);
+//         }
+//         self.GPPUD.write(0);
+//     }
+// }

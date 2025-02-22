@@ -8,9 +8,12 @@
 // in linker script.
 #![no_main]
 
-use libkernel::ilog;
+use libkernel::{
+    drivers::device_tree::{self, BASE_ADDR_DEVICETREE},
+    ilog,
+};
 
-use core::arch::global_asm;
+use core::arch::{asm, global_asm};
 
 use libkernel::{cpu, drivers};
 
@@ -24,10 +27,11 @@ pub extern "C" fn entry() {
 
 #[no_mangle]
 pub extern "C" fn el1_run() {
-    let _ret = cpu::el::get_current_el();
-    let mut drivers = drivers::Drivers::new();
+    let ret = cpu::el::get_current_el();
+    let dt = device_tree::DeviceTree::new(BASE_ADDR_DEVICETREE);
+    let mut drivers = drivers::Drivers::new(&dt);
     drivers.init();
-    //ilog!("el {ret}");
+    ilog!("el {ret}");
     loop {
         let chr = drivers.uart.recv();
         drivers.uart.send(chr);
