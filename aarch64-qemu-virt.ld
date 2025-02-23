@@ -14,12 +14,8 @@ SECTIONS
         *(.text*)                 /* Everything else */
     } :segment_code
  
-    .rodata ALIGN(16) : { 
-        *(.rodata*) 
-    } 
-    .data ALIGN(16) : { 
-        *(.data*) 
-    } 
+    .rodata : ALIGN(8) { *(.rodata*) } :segment_code
+    .data : { *(.data*) } :segment_data
     _bss_start = .;
     .bss ALIGN(16) (NOLOAD) : { 
         *(.bss*) 

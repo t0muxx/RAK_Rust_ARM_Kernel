@@ -5,13 +5,7 @@ pub struct Register<T> {
     /// Contains memory address of the register.
     address: *mut T,
 }
-impl Default for Register<u32> {
-    fn default() -> Self {
-        Self {
-            address: 0 as *mut u32,
-        }
-    }
-}
+
 impl<T> Register<T> {
     pub const fn new(address: usize) -> Self {
         Register {
@@ -30,3 +24,6 @@ impl<T> Register<T> {
         unsafe { ptr::write_volatile(self.address, val) }
     }
 }
+
+unsafe impl<T> Send for Register<T> where T: Send {}
+unsafe impl<T> Sync for Register<T> where T: Send {}

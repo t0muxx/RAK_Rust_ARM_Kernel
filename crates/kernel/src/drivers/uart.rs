@@ -1,7 +1,5 @@
-use fdt::FdtError;
-
 use crate::drivers::mmio;
-use crate::{check_bit, clear_bit, ilog, set_bit};
+use crate::{check_bit, clear_bit, set_bit};
 use core::arch::asm;
 use core::fmt;
 
@@ -92,30 +90,29 @@ use super::Driver;
 //}
 
 #[allow(non_snake_case, dead_code)]
-#[derive(Default)]
 pub struct UARTPL011 {
     pub is_init: bool,
     /// Data register
-    DR: mmio::Register<u32>,
+    pub DR: mmio::Register<u32>,
     /// ...
-    RSRECR: mmio::Register<u32>,
+    pub RSRECR: mmio::Register<u32>,
     /// Flag register
-    FR: mmio::Register<u32>,
+    pub FR: mmio::Register<u32>,
     // not used
     // ILPR
     /// Integer Baud rate divisor
-    IBRD: mmio::Register<u32>,
+    pub IBRD: mmio::Register<u32>,
     /// Fractional Baud rate divisor
-    FBRD: mmio::Register<u32>,
+    pub FBRD: mmio::Register<u32>,
     /// Line Ccontrol register
-    LCR_H: mmio::Register<u32>,
-    CR: mmio::Register<u32>,
-    IFLS: mmio::Register<u32>,
-    IMSC: mmio::Register<u32>,
-    RIS: mmio::Register<u32>,
-    MIS: mmio::Register<u32>,
-    ICR: mmio::Register<u32>,
-    DMACR: mmio::Register<u32>,
+    pub LCR_H: mmio::Register<u32>,
+    pub CR: mmio::Register<u32>,
+    pub IFLS: mmio::Register<u32>,
+    pub IMSC: mmio::Register<u32>,
+    pub RIS: mmio::Register<u32>,
+    pub MIS: mmio::Register<u32>,
+    pub ICR: mmio::Register<u32>,
+    pub DMACR: mmio::Register<u32>,
     //ITCR: mmio::Register<u32>,
     //ITIP: mmio::Register<u32>,
     //ITOP: mmio::Register<u32>,
@@ -146,13 +143,30 @@ impl Driver for UARTPL011 {
         }
     }
 
-    fn init(&mut self) {
-        self.is_init = true;
-        let mut val = self.CR.read();
-        clear_bit!(val, 0);
-        self.CR.write(val);
-        set_bit!(val, 0);
-        self.CR.write(val);
+    fn init(&mut self, dt: &DeviceTree) {
+        if let Some(base_address) = dt.get_node_address("/pl011") {
+            self.DR = mmio::Register::new(base_address + 0x0);
+            self.RSRECR = mmio::Register::new(base_address + 0x4);
+            self.FR = mmio::Register::new(base_address + 0x18);
+            self.IBRD = mmio::Register::new(base_address + 0x24);
+            self.FBRD = mmio::Register::new(base_address + 0x28);
+            self.LCR_H = mmio::Register::new(base_address + 0x2c);
+            self.CR = mmio::Register::new(base_address + 0x30);
+            self.IFLS = mmio::Register::new(base_address + 0x34);
+            self.IMSC = mmio::Register::new(base_address + 0x38);
+            self.RIS = mmio::Register::new(base_address + 0x3c);
+            self.MIS = mmio::Register::new(base_address + 0x40);
+            self.ICR = mmio::Register::new(base_address + 0x44);
+            self.DMACR = mmio::Register::new(base_address + 0x48);
+            self.is_init = true;
+            let mut val = self.CR.read();
+            clear_bit!(val, 0);
+            self.CR.write(val);
+            set_bit!(val, 0);
+            self.CR.write(val);
+        } else {
+            panic!("Error parsing device tree");
+        }
     }
     fn deinit(&mut self) {
         self.is_init = false;

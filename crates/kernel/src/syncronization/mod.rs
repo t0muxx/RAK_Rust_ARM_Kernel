@@ -2,6 +2,7 @@
 
 // Testing
 pub mod atomic;
+pub mod mutex_spinlock;
 
 // TODO : Test with multithreading...
 // and MMU set.

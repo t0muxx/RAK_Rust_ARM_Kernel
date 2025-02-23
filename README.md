@@ -12,4 +12,5 @@ Originally started for raspberry, but only runs on qemu virt.
 
 # Next todo
 
-- Needs global mutable variables for drivers. Need to implement some kind of mutex
+- Basic Mutex done. With `use core::sync::atomic::AtomicUsize;`. Needs to understand why my implem infinite loop.
+- MMU

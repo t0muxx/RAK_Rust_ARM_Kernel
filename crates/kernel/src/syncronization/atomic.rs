@@ -1,5 +1,4 @@
 //! Atomic operation implementation based on : https://whenderson.dev/blog/implementing-atomics-in-rust/
-//! spinlock based.
 
 use core::arch::asm;
 use core::cell::UnsafeCell;
@@ -17,7 +16,7 @@ unsafe impl Send for AtomicUsize {}
 unsafe impl Sync for AtomicUsize {}
 
 impl AtomicUsize {
-    pub fn new(v: usize) -> Self {
+    pub const fn new(v: usize) -> Self {
         AtomicUsize {
             inner: UnsafeCell::new(v),
         }
@@ -58,7 +57,7 @@ impl AtomicUsize {
         v
     }
     /// Set the value and return the old value.
-    pub fn swap(&self, mut v: usize) -> usize {
+    pub fn swap(&self, v: usize) -> usize {
         let mut old: usize;
         unsafe {
             asm!(
